@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>its_disco — Content Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05070c; --surface:#0a0e17; --surface2:#111a2b; --border:#1e293b;
+  --text:#f2f4f8; --muted:#8896ab; --accent:#2450d6;
+  --accent-grad:var(--accent);
+  --danger:#ef4444; --ok:#22c55e;
+  --font-display:'Bricolage Grotesque',sans-serif; --font-body:'Inter',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);padding:24px 16px 100px;}
+.wrap{max-width:920px;margin:0 auto;}
+h1{font-family:var(--font-display);font-weight:800;font-size:clamp(1.6rem,4vw,2.4rem);letter-spacing:-0.03em;margin-bottom:6px;}
+h1 span{background:var(--accent-grad);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.sub{color:var(--muted);font-size:0.88rem;margin-bottom:24px;line-height:1.6;max-width:620px;}
+.sub a{color:var(--accent);}
+
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:16px;}
+.panel h2{font-family:var(--font-display);font-size:1rem;margin-bottom:4px;}
+.panel .hint{color:var(--muted);font-size:0.78rem;margin-bottom:14px;}
+
+.load-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+input[type=file]{color:var(--muted);font-size:0.8rem;}
+
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.tab{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:8px 16px;border-radius:999px;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.tab.active{color:#fff;background:var(--accent-grad);border-color:transparent;}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;}
+
+.item-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;display:grid;gap:8px;grid-template-columns:1fr;}
+.item-card .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;}
+.item-card label{font-size:0.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:block;margin-bottom:3px;}
+input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:8px;font-family:var(--font-body);font-size:0.85rem;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+textarea{resize:vertical;min-height:50px;}
+.item-actions{display:flex;justify-content:space-between;align-items:center;margin-top:4px;}
+.thumb{width:52px;height:36px;object-fit:cover;border-radius:6px;border:1px solid var(--border);background:var(--bg);}
+.cover{width:36px;height:36px;object-fit:cover;border-radius:50%;border:1px solid var(--border);background:var(--bg);}
+
+button{font-family:var(--font-body);cursor:pointer;border:none;border-radius:999px;font-weight:600;font-size:0.8rem;padding:8px 16px;transition:all .2s;}
+.btn-primary{background:var(--accent-grad);color:#fff;}
+.btn-primary:hover{filter:brightness(1.1);}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);}
+.btn-ghost:hover{background:var(--surface2);}
+.btn-danger{background:transparent;border:1px solid rgba(239,68,68,0.4);color:var(--danger);}
+.btn-danger:hover{background:rgba(239,68,68,0.12);}
+.btn-sm{padding:6px 12px;font-size:0.74rem;}
+
+.add-form{border-top:1px dashed var(--border);padding-top:14px;margin-top:6px;}
+.stars-input{display:flex;gap:4px;}
+.stars-input span{cursor:pointer;font-size:1.2rem;color:#333;}
+.stars-input span.filled{color:#f59e0b;}
+
+.footer-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(13,13,17,0.92);backdrop-filter:blur(16px);border-top:1px solid var(--border);padding:14px 16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;z-index:50;}
+.status{font-size:0.78rem;color:var(--ok);align-self:center;min-height:1em;}
+.empty{color:var(--muted);font-size:0.82rem;padding:10px 2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Content <span>Admin</span></h1>
+  <p class="sub">Edit your portfolio's work items, reviews, and songs here — then export the updated <code>data.json</code> and commit it to your repo. Vercel/GitHub Pages will redeploy automatically. This tool runs entirely in your browser; nothing is uploaded anywhere.</p>
+
+  <div class="panel">
+    <h2>1. Load your current data</h2>
+    <div class="hint">Pick the <code>data.json</code> file from your project folder (or it'll auto-load if this admin page is hosted next to it).</div>
+    <div class="load-row">
+      <input type="file" id="file-input" accept="application/json">
+      <button class="btn-ghost btn-sm" id="start-blank">Start blank instead</button>
+      <span class="status" id="load-status"></span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="work">Work Items</div>
+    <div class="tab" data-tab="reviews">Reviews</div>
+    <div class="tab" data-tab="songs">Songs</div>
+  </div>
+
+  <div class="tabpanel active" id="tab-work">
+    <div class="panel">
+      <h2>Work items</h2>
+      <div class="hint">Category must be one of: banners, server-banners, footer-banners, logos — these map to the grids on the Past Work page.</div>
+      <div id="work-list"></div>
+      <div class="add-form">
+        <div class="row">
+          <div><label>Name</label><input id="w-name" placeholder="Banner 6"></div>
+          <div><label>Category</label>
+            <select id="w-category">
+              <option value="banners">banners</option>
+              <option value="server-banners">server-banners</option>
+              <option value="footer-banners">footer-banners</option>
+              <option value="logos">logos</option>
+            </select>
+          </div>
+          <div><label>Image URL</label><input id="w-src" placeholder="https://files.catbox.moe/xxxxxx.png"></div>
+        </div>
+        <button class="btn-primary btn-sm" style="margin-top:10px;" id="add-work">+ Add work item</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabpanel" id="tab-reviews">
+    <div class="panel">
+      <h2>Reviews</h2>
+      <div id="reviews-list"></div>
+      <div class="add-form">
+        <div class="row">
+          <div><label>Name</label><input id="r-name" placeholder="username"></div>
+          <div><label>Service</label><input id="r-service" placeholder="Logo Design"></div>
+          <div><label>Stars</label><div class="stars-input" id="r-stars-input">★★★★★</div></div>
+        </div>
+        <div style="margin-top:8px;"><label>Review text</label><textarea id="r-text" placeholder="What the client said..."></textarea></div>
+        <button class="btn-primary btn-sm" style="margin-top:10px;" id="add-review">+ Add review</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabpanel" id="tab-songs">
+    <div class="panel">
+      <h2>Songs (music player playlist)</h2>
+      <div id="songs-list"></div>
+      <div class="add-form">
+        <div class="row">
+          <div><label>Title</label><input id="s-title" placeholder="Song title"></div>
+          <div><label>Audio URL (mp3)</label><input id="s-src" placeholder="https://files.catbox.moe/xxxxxx.mp3"></div>
+          <div><label>Cover image URL</label><input id="s-cover" placeholder="https://files.catbox.moe/xxxxxx.jpg"></div>
+        </div>
+        <button class="btn-primary btn-sm" style="margin-top:10px;" id="add-song">+ Add song</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-bar">
+  <button class="btn-primary" id="download-json">⬇ Download data.json</button>
+  <button class="btn-ghost" id="copy-json">Copy JSON</button>
+  <span class="status" id="save-status"></span>
+</div>
+
+<script>
+var data = { workItems: [], reviews: [], playlist: [] };
+var reviewStarsDraft = 5;
+
+// ---------- Load ----------
+document.getElementById('file-input').addEventListener('change', function(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      data = JSON.parse(ev.target.result);
+      data.workItems = data.workItems || [];
+      data.reviews = data.reviews || [];
+      data.playlist = data.playlist || [];
+      setStatus('load-status', 'Loaded ' + file.name, true);
+      renderAll();
+    }catch(err){
+      setStatus('load-status', 'Could not parse that file as JSON.', false);
+    }
+  };
+  reader.readAsText(file);
+});
+document.getElementById('start-blank').addEventListener('click', function(){
+  data = { workItems: [], reviews: [], playlist: [] };
+  setStatus('load-status', 'Starting with a blank dataset.', true);
+  renderAll();
+});
+// try auto-loading data.json if this admin page is served alongside it
+fetch('data.json', {cache:'no-store'}).then(function(r){
+  if(!r.ok) throw 0;
+  return r.json();
+}).then(function(json){
+  data = json;
+  data.workItems = data.workItems || [];
+  data.reviews = data.reviews || [];
+  data.playlist = data.playlist || [];
+  setStatus('load-status', 'Auto-loaded data.json from this folder.', true);
+  renderAll();
+}).catch(function(){ /* fine, user can load manually */ });
+
+function setStatus(id, msg, ok){
+  var el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.color = ok ? 'var(--ok)' : 'var(--danger)';
+  setTimeout(function(){ el.textContent=''; }, 4000);
+}
+
+// ---------- Tabs ----------
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click', function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+    document.querySelectorAll('.tabpanel').forEach(function(x){x.classList.remove('active');});
+    t.classList.add('active');
+    document.getElementById('tab-'+t.dataset.tab).classList.add('active');
+  });
+});
+
+// ---------- Render ----------
+function renderAll(){ renderWork(); renderReviews(); renderSongs(); }
+
+function renderWork(){
+  var list = document.getElementById('work-list');
+  if(!data.workItems.length){ list.innerHTML = '<div class="empty">No work items yet — add one below.</div>'; return; }
+  list.innerHTML = data.workItems.map(function(w, i){
+    return '<div class="item-card">'
+      + '<div class="row">'
+      + '<div><label>Preview</label>' + (w.src ? '<img class="thumb" src="'+esc(w.src)+'">' : '<div class="thumb"></div>') + '</div>'
+      + '<div><label>Name</label><input data-i="'+i+'" data-f="name" value="'+esc(w.name)+'"></div>'
+      + '<div><label>Category</label><select data-i="'+i+'" data-f="category">'
+        + ['banners','server-banners','footer-banners','logos'].map(function(c){return '<option value="'+c+'"'+(c===w.category?' selected':'')+'>'+c+'</option>';}).join('')
+      + '</select></div>'
+      + '<div><label>Image URL</label><input data-i="'+i+'" data-f="src" value="'+esc(w.src)+'"></div>'
+      + '</div>'
+      + '<div class="item-actions"><span style="color:var(--muted);font-size:0.72rem;">id: '+esc(w.id)+'</span><button class="btn-danger btn-sm" data-del="'+i+'">Delete</button></div>'
+      + '</div>';
+  }).join('');
+  list.querySelectorAll('input,select').forEach(function(el){
+    el.addEventListener('input', function(){
+      data.workItems[+this.dataset.i][this.dataset.f] = this.value;
+      if(this.dataset.f === 'src') renderWork();
+    });
+  });
+  list.querySelectorAll('[data-del]').forEach(function(btn){
+    btn.addEventListener('click', function(){ data.workItems.splice(+this.dataset.del,1); renderWork(); });
+  });
+}
+
+function renderReviews(){
+  var list = document.getElementById('reviews-list');
+  if(!data.reviews.length){ list.innerHTML = '<div class="empty">No reviews yet — add one below.</div>'; return; }
+  list.innerHTML = data.reviews.map(function(r, i){
+    var stars = [1,2,3,4,5].map(function(s){return '<span data-i="'+i+'" data-s="'+s+'" class="'+(s<=r.stars?'filled':'')+'">★</span>';}).join('');
+    return '<div class="item-card">'
+      + '<div class="row">'
+      + '<div><label>Name</label><input data-i="'+i+'" data-f="name" value="'+esc(r.name)+'"></div>'
+      + '<div><label>Service</label><input data-i="'+i+'" data-f="service" value="'+esc(r.service)+'"></div>'
+      + '<div><label>Stars</label><div class="stars-input" data-stars="'+i+'">'+stars+'</div></div>'
+      + '</div>'
+      + '<div><label>Text</label><textarea data-i="'+i+'" data-f="text">'+esc(r.text)+'</textarea></div>'
+      + '<div class="item-actions"><span style="color:var(--muted);font-size:0.72rem;">id: '+esc(r.id)+'</span><button class="btn-danger btn-sm" data-del="'+i+'">Delete</button></div>'
+      + '</div>';
+  }).join('');
+  list.querySelectorAll('input,textarea').forEach(function(el){
+    el.addEventListener('input', function(){ data.reviews[+this.dataset.i][this.dataset.f] = this.value; });
+  });
+  list.querySelectorAll('[data-s]').forEach(function(el){
+    el.addEventListener('click', function(){ data.reviews[+this.dataset.i].stars = +this.dataset.s; renderReviews(); });
+  });
+  list.querySelectorAll('[data-del]').forEach(function(btn){
+    btn.addEventListener('click', function(){ data.reviews.splice(+this.dataset.del,1); renderReviews(); });
+  });
+}
+
+function renderSongs(){
+  var list = document.getElementById('songs-list');
+  if(!data.playlist.length){ list.innerHTML = '<div class="empty">No songs yet — add one below.</div>'; return; }
+  list.innerHTML = data.playlist.map(function(s, i){
+    return '<div class="item-card">'
+      + '<div class="row">'
+      + '<div><label>Cover</label>' + (s.cover ? '<img class="cover" src="'+esc(s.cover)+'">' : '<div class="cover"></div>') + '</div>'
+      + '<div><label>Title</label><input data-i="'+i+'" data-f="title" value="'+esc(s.title)+'"></div>'
+      + '<div><label>Audio URL</label><input data-i="'+i+'" data-f="src" value="'+esc(s.src)+'"></div>'
+      + '<div><label>Cover URL</label><input data-i="'+i+'" data-f="cover" value="'+esc(s.cover||'')+'"></div>'
+      + '</div>'
+      + '<div class="item-actions"><span style="color:var(--muted);font-size:0.72rem;">id: '+esc(s.id)+'</span><button class="btn-danger btn-sm" data-del="'+i+'">Delete</button></div>'
+      + '</div>';
+  }).join('');
+  list.querySelectorAll('input').forEach(function(el){
+    el.addEventListener('input', function(){
+      data.playlist[+this.dataset.i][this.dataset.f] = this.value;
+      if(this.dataset.f === 'cover') renderSongs();
+    });
+  });
+  list.querySelectorAll('[data-del]').forEach(function(btn){
+    btn.addEventListener('click', function(){ data.playlist.splice(+this.dataset.del,1); renderSongs(); });
+  });
+}
+
+function esc(s){ return (s===undefined||s===null?'':String(s)).replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function nextId(prefix, arr){
+  var n = arr.length + 1;
+  while(arr.some(function(x){return x.id === prefix+n;})) n++;
+  return prefix ? prefix+n : n;
+}
+
+// ---------- Add new ----------
+document.getElementById('add-work').addEventListener('click', function(){
+  var name = document.getElementById('w-name').value.trim();
+  var category = document.getElementById('w-category').value;
+  var src = document.getElementById('w-src').value.trim();
+  if(!name || !src){ alert('Name and image URL are required.'); return; }
+  data.workItems.push({ id: nextId('w', data.workItems), category: category, name: name, src: src });
+  document.getElementById('w-name').value=''; document.getElementById('w-src').value='';
+  renderWork();
+});
+
+(function(){
+  // replace static text with clickable stars
+  document.getElementById('r-stars-input').innerHTML = [1,2,3,4,5].map(function(s){return '<span data-s="'+s+'" class="'+(s<=5?'filled':'')+'">★</span>';}).join('');
+  document.getElementById('r-stars-input').addEventListener('click', function(e){
+    if(e.target.tagName !== 'SPAN') return;
+    reviewStarsDraft = +e.target.dataset.s;
+    document.getElementById('r-stars-input').querySelectorAll('span').forEach(function(sp){
+      sp.classList.toggle('filled', +sp.dataset.s <= reviewStarsDraft);
+    });
+  });
+})();
+
+document.getElementById('add-review').addEventListener('click', function(){
+  var name = document.getElementById('r-name').value.trim();
+  var service = document.getElementById('r-service').value.trim();
+  var text = document.getElementById('r-text').value.trim();
+  if(!name || !text){ alert('Name and review text are required.'); return; }
+  data.reviews.push({ id: nextId('', data.reviews), name: name, service: service, stars: reviewStarsDraft, text: text });
+  document.getElementById('r-name').value=''; document.getElementById('r-service').value=''; document.getElementById('r-text').value='';
+  renderReviews();
+});
+
+document.getElementById('add-song').addEventListener('click', function(){
+  var title = document.getElementById('s-title').value.trim();
+  var src = document.getElementById('s-src').value.trim();
+  var cover = document.getElementById('s-cover').value.trim();
+  if(!title || !src){ alert('Title and audio URL are required.'); return; }
+  data.playlist.push({ id: nextId('', data.playlist), title: title, src: src, cover: cover });
+  document.getElementById('s-title').value=''; document.getElementById('s-src').value=''; document.getElementById('s-cover').value='';
+  renderSongs();
+});
+
+// ---------- Export ----------
+document.getElementById('download-json').addEventListener('click', function(){
+  var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'data.json';
+  a.click();
+  setStatus('save-status', 'Downloaded — replace data.json in your repo and commit/push.', true);
+});
+document.getElementById('copy-json').addEventListener('click', function(){
+  navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(function(){
+    setStatus('save-status', 'Copied to clipboard.', true);
+  });
+});
+</script>
+</body>
+</html>
