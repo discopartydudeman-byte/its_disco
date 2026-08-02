@@ -12,16 +12,21 @@
     { "id": "sb1", "category": "server-banners", "name": "Server Banner 1", "src": "https://files.catbox.moe/obwj8p.png" },
     { "id": "sb2", "category": "server-banners", "name": "Server Banner 2", "src": "https://files.catbox.moe/1qii4l.png" },
     { "id": "sb3", "category": "server-banners", "name": "Server Banner 3", "src": "https://files.catbox.moe/oc93c7.png" },
+    { "id": "sb4", "category": "server-banners", "name": "Server Banner 4", "src": "https://files.catbox.moe/qnjvx3.png" },
 
-    { "id": "fb1", "category": "footer-banners", "name": "Footer Banner 1", "src": "https://files.catbox.moe/ia7emo.png" },
-    { "id": "fb2", "category": "footer-banners", "name": "Footer Banner 2", "src": "https://files.catbox.moe/ctsr92.png" },
+    { "id": "fb1", "category": "footer-banners", "name": "Footer Banner 1", "src": "https://files.catbox.moe/knplpf.png" },
+    { "id": "fb2", "category": "footer-banners", "name": "Footer Banner 2", "src": "https://files.catbox.moe/6s8mz1.png" },
+    { "id": "fb3", "category": "footer-banners", "name": "Footer Banner 3", "src": "https://files.catbox.moe/9c3par.png" },
+    { "id": "fb4", "category": "footer-banners", "name": "Footer Banner 4", "src": "https://files.catbox.moe/uqwkum.png" },
 
-    { "id": "l1", "category": "logos", "name": "Logo 1", "src": "https://files.catbox.moe/u1hacs.png" },
-    { "id": "l2", "category": "logos", "name": "Logo 2", "src": "https://files.catbox.moe/tnvruy.png" },
-    { "id": "l3", "category": "logos", "name": "Logo 3", "src": "https://files.catbox.moe/m73nqp.png" },
-    { "id": "l4", "category": "logos", "name": "Logo 4", "src": "https://files.catbox.moe/cyuevb.png" },
-    { "id": "l5", "category": "logos", "name": "Logo 5", "src": "https://files.catbox.moe/qx2pge.png" },
-    { "id": "l6", "category": "logos", "name": "Logo 6", "src": "https://files.catbox.moe/3x37co.png" }
+    { "id": "l1", "category": "logos", "name": "Logo 1", "src": "https://files.catbox.moe/h9270v.png" },
+    { "id": "l2", "category": "logos", "name": "Logo 2", "src": "https://files.catbox.moe/6c7kb0.png" },
+    { "id": "l3", "category": "logos", "name": "Logo 3", "src": "https://files.catbox.moe/m6ut2y.png" },
+    { "id": "l4", "category": "logos", "name": "Logo 4", "src": "https://files.catbox.moe/ob4u20.png" },
+    { "id": "l5", "category": "logos", "name": "Logo 5", "src": "https://files.catbox.moe/ffxsnz.png" },
+    { "id": "l6", "category": "logos", "name": "Logo 6", "src": "https://files.catbox.moe/nv740b.png" }
+    { "id": "l7", "category": "logos", "name": "Logo 7", "src": "https://files.catbox.moe/9t9l89.png" }
+    { "id": "l8", "category": "logos", "name": "Logo 8", "src": "https://files.catbox.moe/d01ubw.png" }
   ],
 
   "reviews": [
