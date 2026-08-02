@@ -39,6 +39,8 @@
   ],
 
   "playlist": [
-    { "id": 1, "title": "Passionfruit", "src": "https://files.catbox.moe/4a17hq.mp3", "cover": "https://files.catbox.moe/5iqegm.jpg" }
+    { "id": 1, "title": "One Dance", "src": "https://files.catbox.moe/chx1cy.mp3", "cover": "https://files.catbox.moe/8tqr0y.jpeg" }
+    { "id": 2, "title": "Self Aware", "src": "https://files.catbox.moe/rzvtao.mp3", "cover": "https://files.catbox.moe/mpa7cr.jpeg" }
+    { "id": 2, "title": "Passionfruit", "src": "https://files.catbox.moe/4a17hq.mp3", "cover": "https://files.catbox.moe/5iqegm.jpg" }
   ]
 }
