@@ -196,7 +196,9 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;background:var(--text
 .player-btn:hover{color:var(--text);transform:scale(1.1);background:var(--surface2);}
 .player-btn.play{color:var(--text);font-size:1.25rem;background:var(--surface2);border-radius:50%;width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;}
 .player-btn.play:hover{background:#2a2a2a;}
-.player-vol{margin-left:auto;}
+.player-vol{margin-left:auto;display:flex;align-items:center;gap:6px;}
+.vol-icon{background:none;border:none;color:var(--muted);font-size:0.85rem;cursor:pointer;padding:0;line-height:1;transition:color 0.2s;}
+.vol-icon:hover{color:var(--text);}
 .vol-slider{width:52px;}
 .player-toggle-btn{background:none;border:none;color:var(--text);font-size:1.2rem;cursor:pointer;line-height:1;}
 
@@ -340,7 +342,10 @@ footer nav a:hover { background: none; color: var(--text); }
       <button class="player-btn" id="prev-btn">⏮</button>
       <button class="player-btn play" id="play-btn">▶</button>
       <button class="player-btn" id="next-btn">⏭</button>
-      <div class="player-vol"><input type="range" class="vol-slider" id="vol-slider" min="0" max="100" value="50"></div>
+      <div class="player-vol">
+  <button class="vol-icon" id="vol-icon" aria-label="Mute">🔊</button>
+  <input type="range" class="vol-slider" id="vol-slider" min="0" max="100" value="50">
+</div>
     </div>
   </div>
 </div>
@@ -567,15 +572,43 @@ audioEl.addEventListener('timeupdate',function(){
 });
 audioEl.addEventListener('loadedmetadata',function(){timeTot.textContent=fmt(audioEl.duration);});
 audioEl.addEventListener('ended',function(){
-  if(playlist.length>1){curIdx=(curIdx+1)%playlist.length;loadAndPlay(curIdx,true);}
+  if(playlist.length>1){curIdx=getRandomIdx();loadAndPlay(curIdx,true);}
   else{isPlaying=false;playBtn.textContent='▶';audioEl.currentTime=0;progBar.value=0;paintProgress(0);}
 });
 progBar.addEventListener('input',function(){
   paintProgress(this.value);
   if(audioEl.duration)audioEl.currentTime=(this.value/100)*audioEl.duration;
 });
-volSlider.addEventListener('input',function(){audioEl.volume=this.value/100;});
-audioEl.volume=0.5;
+function paintVol(pct){
+  pct=Math.max(0,Math.min(100,pct));
+  volSlider.style.background='linear-gradient(to right, var(--accent) '+pct+'%, var(--surface2) '+pct+'%)';
+}
+function updateVolIcon(vol){
+  var icon=document.getElementById('vol-icon');
+  if(!icon)return;
+  icon.textContent = vol==0 ? '🔇' : (vol<50 ? '🔉' : '🔊');
+}
+var lastVol=50;
+volSlider.addEventListener('input',function(){
+  audioEl.volume=this.value/100;
+  paintVol(this.value);
+  updateVolIcon(this.value);
+});
+paintVol(volSlider.value);
+updateVolIcon(volSlider.value);
+
+document.getElementById('vol-icon').addEventListener('click',function(){
+  if(audioEl.volume>0){
+    lastVol=volSlider.value;
+    volSlider.value=0;
+    audioEl.volume=0;
+  }else{
+    volSlider.value=lastVol||50;
+    audioEl.volume=(lastVol||50)/100;
+  }
+  paintVol(volSlider.value);
+  updateVolIcon(volSlider.value);
+});
 
 function updatePlayerUI(){
   if(!playlist.length){
@@ -588,6 +621,14 @@ function updatePlayerUI(){
   document.getElementById('player-cover').innerHTML=t.cover?'<img src="'+t.cover+'" alt="cover" style="width:100%;height:100%;object-fit:cover;">':'<div class="no-cover">♪</div>';
 }
 
+function getRandomIdx(){
+  if(playlist.length<=1) return curIdx;
+  var idx;
+  do{ idx = Math.floor(Math.random()*playlist.length); }
+  while(idx===curIdx);
+  return idx;
+}
+  
 function loadAndPlay(idx,doPlay){
   if(!playlist.length)return;
   curIdx=idx;
@@ -643,7 +684,7 @@ document.getElementById('prev-btn').addEventListener('click',function(){
 });
 document.getElementById('next-btn').addEventListener('click',function(){
   if(!playlist.length)return;
-  curIdx=(curIdx+1)%playlist.length;loadAndPlay(curIdx,isPlaying);
+  curIdx=getRandomIdx();loadAndPlay(curIdx,isPlaying);
 });
 document.getElementById('player-expand-btn').addEventListener('click',function(){
   playerEl.classList.remove('minimized');
