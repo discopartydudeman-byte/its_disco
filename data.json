@@ -2,10 +2,13 @@
   "workItems": [
     { "id": "b1", "category": "banners", "name": "Banner 1", "src": "https://files.catbox.moe/cylixt.png" },
     { "id": "b2", "category": "banners", "name": "Banner 2", "src": "https://files.catbox.moe/3xy9xq.png" },
-    { "id": "b3", "category": "banners", "name": "Banner 3", "src": "https://files.catbox.moe/abrh8m.png" },
-    { "id": "b4", "category": "banners", "name": "Banner 4", "src": "https://files.catbox.moe/eb1f8x.png" },
-    { "id": "b5", "category": "banners", "name": "Banner 5", "src": "https://files.catbox.moe/gye5zr.png" },
-
+    { "id": "b3", "category": "banners", "name": "Banner 3", "src": "https://files.catbox.moe/x7aqmy.png" },
+    { "id": "b4", "category": "banners", "name": "Banner 4", "src": "https://files.catbox.moe/0empni.png" },
+    { "id": "b5", "category": "banners", "name": "Banner 5", "src": "https://files.catbox.moe/lme975.png" },
+    { "id": "b6", "category": "banners", "name": "Banner 6", "src": "https://files.catbox.moe/n663gy.png" },
+    { "id": "b7", "category": "banners", "name": "Banner 7", "src": "https://files.catbox.moe/abrh8m.png" },
+    { "id": "b8", "category": "banners", "name": "Banner 8", "src": "https://files.catbox.moe/b73rea.png" },
+    
     { "id": "sb1", "category": "server-banners", "name": "Server Banner 1", "src": "https://files.catbox.moe/obwj8p.png" },
     { "id": "sb2", "category": "server-banners", "name": "Server Banner 2", "src": "https://files.catbox.moe/1qii4l.png" },
     { "id": "sb3", "category": "server-banners", "name": "Server Banner 3", "src": "https://files.catbox.moe/oc93c7.png" },
